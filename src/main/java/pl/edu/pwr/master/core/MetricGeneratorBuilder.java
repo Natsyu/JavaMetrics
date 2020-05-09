@@ -1,6 +1,7 @@
 package pl.edu.pwr.master.core;
 
 import pl.edu.pwr.master.metrics.ck.*;
+import pl.edu.pwr.master.metrics.fe.FefMetric;
 import pl.edu.pwr.master.metrics.general.*;
 import pl.edu.pwr.master.metrics.martin.CaMetric;
 import pl.edu.pwr.master.metrics.martin.CeMetric;
@@ -30,7 +31,8 @@ public class MetricGeneratorBuilder {
                     new WmcMetric(),
                     new WmcnammMetric(),
                     new WocMetric(),
-                    new NpmMetric()
+                    new NpmMetric(),
+                    new FefMetric()
             )
             );
 
