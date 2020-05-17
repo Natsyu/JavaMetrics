@@ -6,6 +6,7 @@ import pl.edu.pwr.master.metrics.general.*;
 import pl.edu.pwr.master.metrics.martin.CaMetric;
 import pl.edu.pwr.master.metrics.martin.CeMetric;
 import pl.edu.pwr.master.metrics.qmood.*;
+import pl.edu.pwr.master.metrics.visitors.FefVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class MetricGeneratorBuilder {
                     new WmcnammMetric(),
                     new WocMetric(),
                     new NpmMetric(),
-                    new FefMetric()
+                    new FefMetric<FefVisitor>(FefVisitor::new)
             )
             );
 
