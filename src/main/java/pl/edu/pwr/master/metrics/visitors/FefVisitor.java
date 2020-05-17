@@ -1,6 +1,7 @@
 package pl.edu.pwr.master.metrics.visitors;
 
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -14,6 +15,7 @@ public class FefVisitor extends VoidVisitorAdapter<Void> {
 
     @Override
     public void visit(MethodCallExpr n, Void arg) {
+        super.visit(n, arg);
 
         if (n.getScope().isPresent()) {
             Expression key = n.getScope().get();
@@ -26,7 +28,24 @@ public class FefVisitor extends VoidVisitorAdapter<Void> {
         }
         System.out.println(n.getScope() + " - " + n.getName());
         callsCount++;
+    }
+
+    @Override
+    public void visit(FieldAccessExpr n, Void arg){
         super.visit(n, arg);
+        
+        if(n.getScope().isNameExpr()){
+            Expression key = n.getScope();
+            if (calls.containsKey(key))
+                calls.put(key, calls.get(key) + 1);
+            else
+                calls.put(key, 1);
+        } else {
+            selfCallsCount++;
+        }
+
+        System.out.println(n.getScope() + " - " + n.getName());
+        callsCount++;
     }
 
     public int getCallsCount() {
