@@ -11,6 +11,7 @@ import java.util.List;
 public class FefMetric extends MethodMetricStrategy<Double> {
     private static final String METRIC_NAME = "FEF";
     private static float w = 0.5f, x = 0.5f;
+    private final FefVisitor visitor;
 
     public static void setW(float w) {
         FefMetric.w = w;
@@ -20,15 +21,19 @@ public class FefMetric extends MethodMetricStrategy<Double> {
         FefMetric.x = x;
     }
 
+    public FefMetric(FefVisitor visitor) {
+        this.visitor = visitor;
+    }
+
     @Override
     public List<Metric<Double>> compute(CompilationUnit compilationUnit) {
 
         int max = 0;
+        visitor.clearFields();
         MethodMetric<Double> fef = l -> {
-            FefVisitor fefVisitor = new FefVisitor();
-            fefVisitor.visit(l, null);
-            int m = fefVisitor.maxCalls();
-            int n = fefVisitor.getCallsCount();
+            visitor.visit(l, null);
+            int m = visitor.maxCalls();
+            int n = visitor.getCallsCount();
             return calculateEquation(m, n);
         };
 
