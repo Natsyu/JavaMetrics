@@ -7,6 +7,8 @@ import pl.edu.pwr.master.metrics.martin.CaMetric;
 import pl.edu.pwr.master.metrics.martin.CeMetric;
 import pl.edu.pwr.master.metrics.qmood.*;
 import pl.edu.pwr.master.metrics.visitors.FefVisitor;
+import pl.edu.pwr.master.metrics.visitors.FefVisitorStandard;
+import pl.edu.pwr.master.metrics.visitors.FefVisitorWithFields;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,8 @@ public class MetricGeneratorBuilder {
                     new WmcnammMetric(),
                     new WocMetric(),
                     new NpmMetric(),
-                    new FefMetric<FefVisitor>(FefVisitor::new)
+                    new FefMetric<FefVisitor>(FefVisitorStandard::new, "FEF_Standard"),
+                    new FefMetric<FefVisitor>(FefVisitorWithFields::new, "FEF_Fields")
             )
             );
 
@@ -52,7 +55,7 @@ public class MetricGeneratorBuilder {
                     new CamMetric(),
                     new CeMetric(),
                     new CaMetric()
-                )
+            )
             );
 
     private List<MetricStrategy> strategies;

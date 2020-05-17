@@ -1,13 +1,15 @@
 package pl.edu.pwr.master.metrics.visitors;
 
 
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class FefVisitor extends VoidVisitorAdapter<Void> {
     protected HashMap<String, Integer> calls = new HashMap<String, Integer>();
@@ -18,8 +20,9 @@ public abstract class FefVisitor extends VoidVisitorAdapter<Void> {
     public void visit(MethodCallExpr n, Void arg) {
         super.visit(n, arg);
     }
+
     @Override
-    public void visit(FieldAccessExpr n, Void arg){
+    public void visit(FieldAccessExpr n, Void arg) {
         super.visit(n, arg);
     }
 
@@ -39,9 +42,18 @@ public abstract class FefVisitor extends VoidVisitorAdapter<Void> {
         return max;
     }
 
-    public void clearFields(){
-        calls = new HashMap<String, Integer>();
-        callsCount = 0;
-        selfCallsCount = 0;
+    protected Optional<ClassOrInterfaceDeclaration> getParentClass(Node node) {
+        Optional<Node> parent = node.getParentNode();
+        Optional<ClassOrInterfaceDeclaration> parentClass = parent
+                .filter(p -> p instanceof ClassOrInterfaceDeclaration)
+                .flatMap(p -> Optional.of((ClassOrInterfaceDeclaration) p));
+
+        while (parentClass.isEmpty() && parent.isPresent()) {
+            parent = parent.get().getParentNode();
+            parentClass = parent
+                    .filter(p -> p instanceof ClassOrInterfaceDeclaration)
+                    .flatMap(p -> Optional.of((ClassOrInterfaceDeclaration) p));
+        }
+        return parentClass;
     }
 }

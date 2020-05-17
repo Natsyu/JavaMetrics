@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double> {
-    private static final String METRIC_NAME = "FEF";
+    private static String METRIC_NAME = "FEF";
     private static float w = 0.5f, x = 0.5f;
     private final Supplier<T> supplier;
 
-    public FefMetric(Supplier<T> supplier) {
+    public FefMetric(Supplier<T> supplier, String metricName) {
         this.supplier = supplier;
+        this.METRIC_NAME = metricName;
     }
 
     public static void setW(float w) {
@@ -37,9 +38,7 @@ public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double
             int n = fefVisitor.getCallsCount();
             return calculateEquation(m, n);
         };
-
         return getMetricForMethod(fef, compilationUnit);
-
     }
 
     @Override
