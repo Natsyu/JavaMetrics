@@ -7,11 +7,10 @@ public class FefVisitorStandard extends FefVisitor {
 
     @Override
     public void visit(MethodCallExpr n, Void arg) {
-
+        super.visit(n, arg);
         if (n.getScope().isPresent()) {
-            super.visit(n, arg);
-            String key = null;
-            key = getParentClass((Node) n).get().getName().toString();
+            String key;
+            key = getParentClass(n).get().getName().toString();
             if (key != null)
                 if (calls.containsKey(key))
                     calls.put(key, calls.get(key) + 1);

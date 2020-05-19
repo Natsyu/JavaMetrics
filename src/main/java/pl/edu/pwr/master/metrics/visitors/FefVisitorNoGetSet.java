@@ -1,17 +1,15 @@
 package pl.edu.pwr.master.metrics.visitors;
 
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 public class FefVisitorNoGetSet extends FefVisitor {
 
     @Override
     public void visit(MethodCallExpr n, Void arg) {
-
+        super.visit(n, arg);
         if (n.getScope().isPresent()
-                && n.getScope().toString().toLowerCase().contains("get")
-                && n.getScope().toString().toLowerCase().contains("set") ) {
-            super.visit(n, arg);
+                && !n.getScope().toString().toLowerCase().contains("get")
+                && !n.getScope().toString().toLowerCase().contains("set")) {
             String key;
             key = getParentClass(n).get().getName().toString();
             if (key != null)
