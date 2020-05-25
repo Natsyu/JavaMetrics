@@ -6,6 +6,7 @@ import pl.edu.pwr.master.core.MetricsRunner;
 import pl.edu.pwr.master.downloader.git.GitDownloader;
 import pl.edu.pwr.master.input.CsvReader;
 import pl.edu.pwr.master.input.Input;
+import pl.edu.pwr.master.metrics.fe.FefMetric;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,6 +27,8 @@ public class App {
     private static final String DOWNLOAD_OPTION = "d";
     private static final String DOWNLOAD_ONLY_OPTION = "downloadonly";
     private static final String DEPENDENCY_PARSING_OPTION = "deps";
+    private static final String FEF_W = "w";
+    private static final String FEF_X = "x";
 
     public static void main(String[] args) throws IOException, ParseException {
         Options options = prepareOptions();
@@ -37,6 +40,13 @@ public class App {
             if (line.hasOption(HELP_OPTION)) {
                 printHelp(options);
                 System.exit(1);
+            }
+
+            if (line.hasOption(FEF_W)) {
+                FefMetric.setW(Float.parseFloat(line.getOptionValue(FEF_W)));
+            }
+            if (line.hasOption(FEF_X)) {
+                FefMetric.setX(Float.parseFloat(line.getOptionValue(FEF_X)));
             }
 
             if (!line.hasOption(LOGGING_OPTION)) {
@@ -147,6 +157,18 @@ public class App {
         Option downloadOption = new Option(DOWNLOAD_OPTION, "turn on sources download before parsing");
         Option downloadOnlyOption = new Option(DOWNLOAD_ONLY_OPTION, "turn on only sources download");
 
+        Option FEF_wOption = Option.builder(OUTPUT_FILE_OPTION)
+                .argName(FEF_W)
+                .desc("w value for Fef metric, default 0.5")
+                .hasArg()
+                .build();
+        Option FEF_xOption = Option.builder(OUTPUT_FILE_OPTION)
+                .argName(FEF_X)
+                .desc("x value for Fef metric, default 0.5")
+                .hasArg()
+                .build();
+
+
         Option dependencyParsingOption = new Option(DEPENDENCY_PARSING_OPTION, "[EXPERIMENTAL] turn on dependency parsing");
 
         options.addOptionGroup(inputOptionGroup);
@@ -157,6 +179,8 @@ public class App {
         options.addOption(downloadOption);
         options.addOption(downloadOnlyOption);
         options.addOption(dependencyParsingOption);
+        options.addOption(FEF_wOption);
+        options.addOption(FEF_xOption);
         return options;
     }
 }
