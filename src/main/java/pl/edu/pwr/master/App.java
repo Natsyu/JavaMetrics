@@ -157,12 +157,12 @@ public class App {
         Option downloadOption = new Option(DOWNLOAD_OPTION, "turn on sources download before parsing");
         Option downloadOnlyOption = new Option(DOWNLOAD_ONLY_OPTION, "turn on only sources download");
 
-        Option FEF_wOption = Option.builder(OUTPUT_FILE_OPTION)
+        Option FEF_wOption = Option.builder(FEF_W)
                 .argName(FEF_W)
                 .desc("w value for Fef metric, default 0.5")
                 .hasArg()
                 .build();
-        Option FEF_xOption = Option.builder(OUTPUT_FILE_OPTION)
+        Option FEF_xOption = Option.builder(FEF_X)
                 .argName(FEF_X)
                 .desc("x value for Fef metric, default 0.5")
                 .hasArg()
