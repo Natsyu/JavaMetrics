@@ -9,8 +9,7 @@ public class FefVisitorStandard extends FefVisitor {
     public void visit(MethodCallExpr n, Void arg) {
         super.visit(n, arg);
         if (n.getScope().isPresent()) {
-            String key;
-            key = getParentClass(n).get().getName().toString();
+            String key = n.getScope().get().toString();
             if (key != null)
                 if (calls.containsKey(key))
                     calls.put(key, calls.get(key) + 1);

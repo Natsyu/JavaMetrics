@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double> {
-    private static String METRIC_NAME = "FEF";
+    private final String METRIC_NAME;
     private static float w = 0.5f, x = 0.5f;
     private final Supplier<T> supplier;
 

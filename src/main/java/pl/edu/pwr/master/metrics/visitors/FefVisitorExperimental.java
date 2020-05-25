@@ -24,8 +24,7 @@ public class FefVisitorExperimental extends FefVisitor {
 //                key = getParentClass(node.get()).get().getName().toString();
 //
 //            }
-            String key = null;
-            key = getParentClass((Node) n).get().getName().toString();
+            String key = n.getScope().get().toString();
             if (key != null)
                 if (calls.containsKey(key))
                     calls.put(key, calls.get(key) + 1);

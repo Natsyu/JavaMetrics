@@ -15,8 +15,7 @@ public class FefVisitorWithFields extends FefVisitor {
     public void visit(MethodCallExpr n, Void arg) {
         super.visit(n, arg);
         if (n.getScope().isPresent()) {
-            String key = null;
-            key = getParentClass((Node) n).get().getName().toString();
+            String key = n.getScope().get().toString();
             if (key != null)
                 if (calls.containsKey(key))
                     calls.put(key, calls.get(key) + 1);
@@ -32,8 +31,7 @@ public class FefVisitorWithFields extends FefVisitor {
     public void visit(FieldAccessExpr n, Void arg) {
         super.visit(n, arg);
         if (n.getScope().isNameExpr()) {
-            String key = null;
-            key = getParentClass((Node) n).get().getName().toString();
+            String key = n.getScope().toString();
             if (key != null)
                 if (calls.containsKey(key))
                     calls.put(key, calls.get(key) + 1);
