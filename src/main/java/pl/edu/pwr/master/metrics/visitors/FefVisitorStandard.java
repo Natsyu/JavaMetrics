@@ -1,7 +1,15 @@
 package pl.edu.pwr.master.metrics.visitors;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FefVisitorStandard extends FefVisitor {
 

@@ -53,7 +53,7 @@ public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double
      * @return FEF(obj, mtd) = w(m / n) + (1 – w)(1 - x^m)
      */
     private Double calculateEquation(int m, int n) {
-        return (w * ((double)m / (n + 1)) + (1 - w) * (1 - Math.pow(x, m)));
+        return (w * ((double)m / (n + 0.1)) + (1 - w) * (1 - Math.pow(x, m)));
 
     }
 }

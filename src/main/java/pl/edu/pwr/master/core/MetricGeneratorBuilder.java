@@ -6,10 +6,7 @@ import pl.edu.pwr.master.metrics.general.*;
 import pl.edu.pwr.master.metrics.martin.CaMetric;
 import pl.edu.pwr.master.metrics.martin.CeMetric;
 import pl.edu.pwr.master.metrics.qmood.*;
-import pl.edu.pwr.master.metrics.visitors.FefVisitor;
-import pl.edu.pwr.master.metrics.visitors.FefVisitorNoGetSet;
-import pl.edu.pwr.master.metrics.visitors.FefVisitorStandard;
-import pl.edu.pwr.master.metrics.visitors.FefVisitorWithFields;
+import pl.edu.pwr.master.metrics.visitors.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +35,9 @@ public class MetricGeneratorBuilder {
                     new NpmMetric(),
                     new FefMetric<FefVisitor>(FefVisitorStandard::new, "FEF_Standard"),
                     new FefMetric<FefVisitor>(FefVisitorWithFields::new, "FEF_Fields"),
-                    new FefMetric<FefVisitor>(FefVisitorNoGetSet::new, "FEF_NoGetSet")
+                    new FefMetric<FefVisitor>(FefVisitorNoGetSet::new, "FEF_NoGetSet"),
+                    new FefMetric<FefVisitor>(FefVisitorAtr::new, "FEF_Atr"),
+                    new FefMetric<FefVisitor>(FefVisitorExperimental::new, "FEF_Experimental")
             )
             );
 
