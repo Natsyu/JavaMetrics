@@ -2,6 +2,7 @@ package pl.edu.pwr.master;
 
 import com.github.javaparser.ParseException;
 import org.apache.commons.cli.*;
+import pl.edu.pwr.master.core.MetricGeneratorBuilder;
 import pl.edu.pwr.master.core.MetricsRunner;
 import pl.edu.pwr.master.downloader.git.GitDownloader;
 import pl.edu.pwr.master.input.CsvReader;
@@ -29,6 +30,7 @@ public class App {
     private static final String DEPENDENCY_PARSING_OPTION = "deps";
     private static final String FEF_W = "w";
     private static final String FEF_X = "x";
+    private static final String FEF_ALL_WX = "fefallwx";
 
     public static void main(String[] args) throws IOException, ParseException {
         Options options = prepareOptions();
@@ -42,12 +44,17 @@ public class App {
                 System.exit(1);
             }
 
-            if (line.hasOption(FEF_W)) {
-                FefMetric.setW(Float.parseFloat(line.getOptionValue(FEF_W)));
+            if(!line.hasOption(FEF_ALL_WX)) {
+                if (line.hasOption(FEF_W)) {
+                    FefMetric.setW(Float.parseFloat(line.getOptionValue(FEF_W)));
+                }
+                if (line.hasOption(FEF_X)) {
+                    FefMetric.setX(Float.parseFloat(line.getOptionValue(FEF_X)));
+                }
+
             }
-            if (line.hasOption(FEF_X)) {
-                FefMetric.setX(Float.parseFloat(line.getOptionValue(FEF_X)));
-            }
+
+
 
             if (!line.hasOption(LOGGING_OPTION)) {
                 LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
@@ -96,13 +103,21 @@ public class App {
             if (line.hasOption(DEPENDENCY_PARSING_OPTION))
                 parseDependencies = true;
 
+            boolean feOnly = false;
+
+            if(line.hasOption(FEF_ALL_WX)){
+                feOnly = true;
+                MetricGeneratorBuilder.setFefOnly(true);
+            }
+
+
             if (line.hasOption(CSV_OPTION)) {
                 Input input = CsvReader.getInputToParse(line.getOptionValue(CSV_OPTION));
                 new MetricsRunner(inputPath,
-                        line.getOptionValue(OUTPUT_FILE_OPTION, "output.csv"), input, parseDependencies);
+                        line.getOptionValue(OUTPUT_FILE_OPTION, "output.csv"), input, parseDependencies, feOnly);
             } else {
                 new MetricsRunner(inputPath,
-                        line.getOptionValue(OUTPUT_FILE_OPTION, "output.csv"), parseDependencies);
+                        line.getOptionValue(OUTPUT_FILE_OPTION, "output.csv"), parseDependencies, feOnly);
             }
         } catch (org.apache.commons.cli.ParseException ex) {
             System.err.println(ex.getMessage());
@@ -168,6 +183,11 @@ public class App {
                 .hasArg()
                 .build();
 
+        Option FEF_allWX = Option.builder(FEF_ALL_WX)
+                .argName(FEF_ALL_WX)
+                .desc("calculate Fef metric for all w and x parameters <0.1, 1>")
+                .build();
+
 
         Option dependencyParsingOption = new Option(DEPENDENCY_PARSING_OPTION, "[EXPERIMENTAL] turn on dependency parsing");
 
@@ -181,6 +201,7 @@ public class App {
         options.addOption(dependencyParsingOption);
         options.addOption(FEF_wOption);
         options.addOption(FEF_xOption);
+        options.addOption(FEF_allWX);
         return options;
     }
 }

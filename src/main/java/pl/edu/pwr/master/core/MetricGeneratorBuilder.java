@@ -59,6 +59,28 @@ public class MetricGeneratorBuilder {
             )
             );
 
+    public static List<MetricStrategy> generateFefMetric(){
+        List<MetricStrategy> fefMetrics = new ArrayList<>();
+        for (int w = 1; w <= 10; w++) {
+            for (int x = 1; x <= 10; x++) {
+                float W = w / 10f;
+                float X = x / 10f;
+                fefMetrics.add(new FefMetric<FefVisitor>(FefVisitorStandard::new, "FEF_Standard", W, X));
+                fefMetrics.add(new FefMetric<FefVisitor>(FefVisitorWithFields::new, "FEF_Fields", W, X));
+                fefMetrics.add(new FefMetric<FefVisitor>(FefVisitorNoGetSet::new, "FEF_NoGetSet", W, X));
+                fefMetrics.add(new FefMetric<FefVisitor>(FefVisitorAtr::new, "FEF_Atr", W, X));
+                fefMetrics.add(new FefMetric<FefVisitor>(FefVisitorExperimental::new, "FEF_Experimental", W, X));
+            }
+        }
+        return fefMetrics;
+    }
+
+    private static boolean FEF_ONLY = false;
+
+    public static void setFefOnly(boolean fefOnly){
+        FEF_ONLY = fefOnly;
+    }
+
     private List<MetricStrategy> strategies;
 
     public MetricGeneratorBuilder() {
@@ -87,6 +109,14 @@ public class MetricGeneratorBuilder {
         return this;
     }
 
+    public MetricGeneratorBuilder addFefMetricWithAllWAndX(){
+        generateFefMetric().forEach(s -> {
+            if (!containsMetric(s))
+                strategies.add(s);
+        });
+        return this;
+    }
+
     public MetricGenerator build() {
         return new MetricGenerator(strategies);
     }
@@ -98,8 +128,12 @@ public class MetricGeneratorBuilder {
     public static List<String> getAllMetricNames() {
         List<String> list = new ArrayList<>();
 
-        STRATEGIES_WITHOUT_DEPENDENCY_RESOLUTION.forEach(s -> list.add(s.getName()));
-        STRATEGIES_WITH_DEPENDENCY_RESOLUTION.forEach(s -> list.add(s.getName()));
+        if(FEF_ONLY) {
+            generateFefMetric().forEach(s -> list.add(s.getName()));
+        } else {
+            STRATEGIES_WITHOUT_DEPENDENCY_RESOLUTION.forEach(s -> list.add(s.getName()));
+            STRATEGIES_WITH_DEPENDENCY_RESOLUTION.forEach(s -> list.add(s.getName()));
+        }
 
         return list;
     }

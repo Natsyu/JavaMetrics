@@ -11,20 +11,30 @@ import java.util.function.Supplier;
 
 public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double> {
     private final String METRIC_NAME;
-    private static float w = 0.5f, x = 0.5f;
+    private final float w, x;
+    private static float W = 0.5f, X = 0.5f;
     private final Supplier<T> supplier;
 
     public FefMetric(Supplier<T> supplier, String metricName) {
         this.supplier = supplier;
         this.METRIC_NAME = metricName;
+        w = W;
+        x = X;
+    }
+
+    public FefMetric(Supplier<T> supplier, String metricName, float w, float x) {
+        this.supplier = supplier;
+        this.METRIC_NAME = metricName;
+        this.w = w;
+        this.x = x;
     }
 
     public static void setW(float w) {
-        FefMetric.w = w;
+        FefMetric.W = w;
     }
 
     public static void setX(float x) {
-        FefMetric.x = x;
+        FefMetric.X = x;
     }
 
     @Override
@@ -43,7 +53,7 @@ public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double
 
     @Override
     public String getName() {
-        return METRIC_NAME;
+        return METRIC_NAME + "_" + w + "_" + x;
     }
 
 
@@ -53,7 +63,7 @@ public class FefMetric<T extends FefVisitor> extends MethodMetricStrategy<Double
      * @return FEF(obj, mtd) = w(m / n) + (1 – w)(1 - x^m)
      */
     private Double calculateEquation(int m, int n) {
-        return (w * ((double)m / (n + 0.1)) + (1 - w) * (1 - Math.pow(x, m)));
+        return (w * ((double)m / (n + 0.1)) + (1 - w) * (1.d - Math.pow(x, m)));
 
     }
 }

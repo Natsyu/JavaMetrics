@@ -22,19 +22,19 @@ public class MetricsRunner {
     private static final Logger LOGGER = Logger.getLogger(MetricsRunner.class.getName());
     private boolean parseDependencies;
 
-    public MetricsRunner(String input, String output, boolean parseDependencies) throws IOException, ParseException {
+    public MetricsRunner(String input, String output, boolean parseDependencies, boolean feOnly) throws IOException, ParseException {
         this.parseDependencies = parseDependencies;
         removeExistingOutputFile(output);
-        this.metricSuite(input, output);
+        this.metricSuite(input, output, feOnly);
     }
 
-    public MetricsRunner(String inputPath, String output, Input inputCsv, boolean parseDependencies) throws IOException, ParseException {
+    public MetricsRunner(String inputPath, String output, Input inputCsv, boolean parseDependencies, boolean feOnly) throws IOException, ParseException {
         this.parseDependencies = parseDependencies;
         removeExistingOutputFile(output);
-        this.metricSuite(inputPath, output, inputCsv);
+        this.metricSuite(inputPath, output, inputCsv, feOnly);
     }
 
-    public void metricSuite(String path, String outputFilename) throws IOException, ParseException {
+    public void metricSuite(String path, String outputFilename, boolean feOnly) throws IOException, ParseException {
         List<String> projectPaths = new ArrayList<>();
 
         if (containsOnlyJavaFiles(path)) {
@@ -53,17 +53,17 @@ public class MetricsRunner {
                 String absolutePathWithJars = MavenDependencyDownloader.DEFAULT_OUTPUT_DEPENDENCY_DIR + File.separator + basename(p);
                 if (!result) {
                     LOGGER.info("Dependency parsing failed for: " + p);
-                    parseProject(p, outputFilename);
+                    parseProject(p, outputFilename, feOnly);
                 } else {
                     parseProject(p, absolutePathWithJars, outputFilename);
                 }
             } else {
-                parseProject(p, outputFilename);
+                parseProject(p, outputFilename, feOnly);
             }
         }
     }
 
-    public void metricSuite(String path, String outputFilename, Input input) throws IOException, ParseException {
+    public void metricSuite(String path, String outputFilename, Input input, boolean feOnly) throws IOException, ParseException {
         List<String> projectPaths = getProjectPaths(path);
 
         for (String p : projectPaths) {
@@ -75,24 +75,24 @@ public class MetricsRunner {
                 String absolutePathWithJars = MavenDependencyDownloader.DEFAULT_OUTPUT_DEPENDENCY_DIR + File.separator + basename(p);
                 if (!result) {
                     LOGGER.info("Dependency parsing failed for: " + p);
-                    parseProject(p, outputFilename, input);
+                    parseProject(p, outputFilename, input, feOnly);
                 } else {
                     parseProject(p, absolutePathWithJars, outputFilename, input);
                 }
             } else {
-                parseProject(p, outputFilename, input);
+                parseProject(p, outputFilename, input, feOnly);
             }
         }
     }
 
-    private void parseProject(String projectPath, String outputFilename) throws ParseException, IOException {
-        MetricGenerator metricGenerator = prepareMetricGeneratorNoDeps();
+    private void parseProject(String projectPath, String outputFilename, boolean feOnly) throws ParseException, IOException {
+        MetricGenerator metricGenerator = (!feOnly) ? prepareMetricGeneratorNoDeps() : prepareMetricGeneratorFefAllWX();
         MetricParser metricParser = new MetricParser(metricGenerator, projectPath, outputFilename);
         metricParser.parse(projectPath);
     }
 
-    private void parseProject(String projectPath, String outputFilename, Input input) throws ParseException, IOException {
-        MetricGenerator metricGenerator = prepareMetricGeneratorNoDeps();
+    private void parseProject(String projectPath, String outputFilename, Input input, boolean feOnly) throws ParseException, IOException {
+        MetricGenerator metricGenerator = (!feOnly) ? prepareMetricGeneratorNoDeps() : prepareMetricGeneratorFefAllWX();
         MetricParser metricParser = new MetricParser(metricGenerator, projectPath, outputFilename, input);
         metricParser.parse(projectPath);
     }
@@ -243,6 +243,12 @@ public class MetricsRunner {
         return new MetricGeneratorBuilder()
                 .addMetricsWithoutDependencyResolution()
                 .addMetricsWithDependencyResolution()
+                .build();
+    }
+
+    private MetricGenerator prepareMetricGeneratorFefAllWX(){
+        return new MetricGeneratorBuilder()
+                .addFefMetricWithAllWAndX()
                 .build();
     }
 }
